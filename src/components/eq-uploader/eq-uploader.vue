@@ -1,11 +1,11 @@
 <template>
   <div class="eq-uploader-container">
-
     <div class="eq-uploader-flex">
       <div
         class="eq-uploader-files"
         v-for="(v,i) in filelist"
         :key="i"
+        :style="eqstyle"
       >
         <img
           :src="v"
@@ -19,7 +19,7 @@
             title="点击预览"
           >
           <img
-            @click="deletefile(i)"
+            @click="isdelete(i)"
             src="../../assets/shanchu.svg"
             alt="加载失败"
             title="点击删除"
@@ -32,6 +32,7 @@
         @drop="dropfile"
         @dragenter="prevent"
         @dragover="prevent"
+        :style="eqstyle"
       >
         <input
           @change="choosefile"
@@ -71,6 +72,11 @@ export default {
     }
   },
   props: {
+    action: {
+      type: String,
+      required: true,
+      default: ''
+    },
     types: {
       type: Array,
       default: () => ['image/png', 'image/jpeg']
@@ -87,28 +93,48 @@ export default {
       type: Boolean,
       default: false
     },
+    blob: {
+      type: Boolean,
+      default: true
+    },
     limit: {
       type: Number,
       default: 5
+    },
+    beforeremove: {
+      type: Function
+    },
+    eqstyle: {
+      type: String,
+      default: ''
     }
   },
   methods: {
-    async updatefile(files) {
-      let base64
+    async uploadfile(files) {
+      let srcs
       if (!this.checkfile(files)) return
-      base64 = await this.imgtobase64(files)
-      this.filelist = [...this.filelist, ...base64]
+
+      const form = new FormData()
+      // files.forEach((ele) => {
+      //   console.log(ele);
+      //   form.append("index",ele)
+      // })
+      form.append("sz","files[0]")
+      console.log(form)
+
+      srcs = await this.getImgSrc(files)
+      this.filelist = [...this.filelist, ...srcs]
       this.filelist.splice(this.limit)
       this.$refs.file.value = null
       this.$emit('equploaded', this.filelist)
     },
     choosefile() {
       let files = Array.from(this.$refs.file.files)
-      this.updatefile(files)
+      this.uploadfile(files)
     },
     dropfile(e) {
       e.preventDefault()
-      this.updatefile(Array.from(e.dataTransfer.files))
+      this.uploadfile(Array.from(e.dataTransfer.files))
     },
     prevent(e) {
       e.preventDefault()
@@ -127,18 +153,43 @@ export default {
       }
       return true
     },
-    imgtobase64(files) {
-      //获取一个promise队列
-      let promises = files.map((v) => {
-        return new Promise((res) => {
-          let reader = new FileReader()
-          reader.readAsDataURL(v)
-          reader.onload = function () {
-            res(this.result)
-          }
+    //base64地址
+    getImgSrc(files) {
+      if (this.blob) {
+        return files.map((v) => {
+          const aBlob = new Blob([v], { type: v.type })
+          let tem = URL.createObjectURL(aBlob)
+          return tem
         })
-      })
-      return Promise.all(promises)
+      } else {
+        //获取一个promise队列
+        let promises = files.map((v) => {
+          return new Promise((res) => {
+            let reader = new FileReader()
+            reader.readAsDataURL(v)
+            reader.onload = function () {
+              res(this.result)
+            }
+          })
+        })
+        return Promise.all(promises)
+      }
+    },
+    async isdelete(index) {
+      if (this.beforeremove) {
+        try {
+          let candelete = await this.beforeremove(
+            this.filelist[index],
+            index,
+            this.filelist
+          )
+          candelete ? this.deletefile(index) : null
+        } catch (error) {
+          return
+        }
+      } else {
+        this.deletefile(index)
+      }
     },
     deletefile(index) {
       this.filelist.splice(index, 1)

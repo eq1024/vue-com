@@ -1,12 +1,16 @@
 <template>
   <div id="app">
     <eq-uploader
+      action="baidu.com"
       :types="types"
       :size="1024*1024"
       :limit="7"
       multiple
       delay
       @equploaded="uploaded"
+      :beforeremove="remove"
+      :blob="false"
+      eqstyle="width:200px;height:200px"
     ></eq-uploader>
   </div>
 </template>
@@ -17,15 +21,21 @@ export default {
   name: 'App',
   data() {
     return {
-      types: ['image/png', 'image/jpeg', 'image/gif']
+      types: ['image/png', 'image/jpeg', 'image/gif'],
+      kk: ''
     }
   },
   components: {
     eqUploader
   },
-  methods:{
-    uploaded(data){
-      console.log(data);
+  methods: {
+    uploaded() {},
+    remove() {
+      return new Promise((res) => {
+        setTimeout(() => {
+          res(1)
+        }, 1000)
+      })
     }
   }
 }
