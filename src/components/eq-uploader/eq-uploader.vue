@@ -115,18 +115,26 @@ export default {
       if (!this.checkfile(files)) return
 
       const form = new FormData()
-      // files.forEach((ele) => {
-      //   console.log(ele);
-      //   form.append("index",ele)
-      // })
-      form.append("sz","files[0]")
-      console.log(form)
-
+      files.forEach((ele, index) => {
+        form.append(index, ele)
+      })
+      let ajax = new XMLHttpRequest()
       srcs = await this.getImgSrc(files)
-      this.filelist = [...this.filelist, ...srcs]
-      this.filelist.splice(this.limit)
-      this.$refs.file.value = null
-      this.$emit('equploaded', this.filelist)
+      ajax.open('POST', this.action, true)
+      ajax.send(form)
+      ajax.onreadystatechange = () => {
+        if (ajax.readyState == 4) {
+          if (ajax.status == 200 || ajax.status == 304) {
+            this.filelist = [...this.filelist, ...srcs]
+            this.filelist.splice(this.limit)
+            this.$refs.file.value = null
+            this.$emit('equploaded', this.filelist)
+            console.log(JSON.parse(ajax.responseText))
+          } else {
+            console.error(ajax.statusText)
+          }
+        }
+      }
     },
     choosefile() {
       let files = Array.from(this.$refs.file.files)
@@ -183,8 +191,11 @@ export default {
             index,
             this.filelist
           )
-          candelete ? this.deletefile(index) : null
+          candelete
+            ? this.deletefile(index)
+            : console.error("Delete Fail, This Expect 'ture'")
         } catch (error) {
+          console.error(error)
           return
         }
       } else {
