@@ -19,7 +19,7 @@
 | types         | Array    | ['image/png','image/jpeg','image/gif']               | 允许上传的图片类型,如:image/png    |
 | eqstyle       | String   | 无                                                   | 单个图片盒子样式,使用css即可       |
 | equploaded    | Function | 默认传入一个参数(上传成功的文件)                     | 上传完成触发                       |
-| before-remove | Function | 默认传入三个参数(被删除文件,对应序列号,全部文件列表) | 产出前执行,返回false则停止删除     |
+| before-remove | Function | 默认传入三个参数(被删除文件,对应序列号,全部文件列表) | 删除前执行,返回false则停止删除     |
 
 ### 视频播放组件
 
