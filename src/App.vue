@@ -12,13 +12,19 @@
       :blob="false"
       eqstyle="width:100px;height:100px"
     ></eq-uploader>
-    <eqPlayer :url="url" :controls="controls" :type="type" :height="height" :width="width"/>
+    <eq-plyaer
+      :url="url"
+      :controls="controls"
+      :type="type"
+      :height="height"
+      :width="width"
+    />
   </div>
 </template>
 
 <script>
-import eqUploader from './components/eq-uploader/eq-uploader.vue'
-import eqPlayer from './components/eq-player/eq-player.vue'
+// import eqUploader from './components/eq-uploader/eq-uploader.vue'
+// import eqPlayer from './components/eq-player/eq-player.vue'
 export default {
   name: 'App',
   data() {
@@ -32,8 +38,8 @@ export default {
     }
   },
   components: {
-    eqUploader,
-    eqPlayer
+    // eqUploader,
+    // eqPlayer
   },
   methods: {
     uploaded() {},

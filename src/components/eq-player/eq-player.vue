@@ -27,7 +27,7 @@ import videozhCN from 'video.js/dist/lang/zh-CN.json'
 import 'video.js/dist/video-js.css'
 
 export default {
-  name: 'eqplyaer',
+  name: 'eqPlyaer',
   data() {
     return {
       player: null,

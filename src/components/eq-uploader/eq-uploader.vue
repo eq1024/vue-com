@@ -62,7 +62,7 @@
 
 <script>
 export default {
-  name: 'eq-uploader',
+  name: 'eqUploader',
   data() {
     return {
       prwshow: false,
