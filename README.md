@@ -7,7 +7,7 @@
 
 支持转为Blob和Base64
 
-同时提供测试[后端](https://github.com/eq1024/vue-com-node),开启后直接向`http:localhost:2714/upload`发送post请求,即可解析`formdata`数据,自动保存图片
+同时提供对应测试[后端](https://github.com/eq1024/vue-com-node),开启后直接向`http:localhost:2714/upload`发送post请求,即可解析`formdata`数据,自动保存图片
 
 | 参数          | 类型     | 默认数据                                             | 说明                               |
 | :------------ | -------- | ---------------------------------------------------- | ---------------------------------- |
